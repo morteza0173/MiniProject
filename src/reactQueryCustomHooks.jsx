@@ -16,9 +16,11 @@ export const useFetchTasks = () => {
 export const useCreateTask = () => {
   const queryClient = useQueryClient();
   const { mutate: createTask, isPending } = useMutation({
-    mutationFn: (taskTitle) => customFetch.post("/", { title: taskTitle }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    mutationFn:async (taskTitle) =>{
+      return await customFetch.post("/", { title: taskTitle })
+    },
+    onSuccess:async () => {
+     await queryClient.invalidateQueries({ queryKey: ["tasks"] });
       toast.success("task added");
     },
     onError: (error) => {
@@ -32,12 +34,12 @@ export const useEditeTask = () => {
   const queryClient = useQueryClient();
 
   const { mutate: editTask } = useMutation({
-    mutationFn: ({ taskID, isDone }) => {
-      customFetch.put(`/${taskID}`, { isDone });
+    mutationFn:async ({ taskID, isDone }) => {
+    return await customFetch.put(`/${taskID}`, { isDone });
     },
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    onSuccess:async () => {
+     await queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
   return { editTask };
@@ -47,11 +49,11 @@ export const useDeleteTask = () => {
   const queryClient = useQueryClient();
 
   const { mutate: deleteTask, isPending } = useMutation({
-    mutationFn: (taskID) => {
-      customFetch.delete(`/${taskID}`);
+    mutationFn:async (taskID) => {
+    return await customFetch.delete(`/${taskID}`);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    onSuccess:async () => {
+     await queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
   return { deleteTask, isPending };
